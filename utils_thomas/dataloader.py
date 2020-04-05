@@ -2,8 +2,9 @@
 import torch
 from torch.utils.data import Dataset
 import pandas as pd
-from scipy.io import loadmat
-
+#from scipy.io import loadmat
+import numpy as np
+from skimage import io, transform
 import os
 import os.path
 from utils.variables import *
@@ -27,17 +28,30 @@ class LicenseLandmarksDataset(Dataset):
     def __len__(self):
         return len(self.landmarks_frame)
 
+    def four_corner(self, landmarks):
+        x=landmarks[0]
+        y=landmarks[1]
+        width= landmarks[2]
+        height= landmarks[3]
+        #print(height)
+        corner = [x,y,x+width,y,x,y+height,x+width,y+height]
+        corner = np.array(corner)
+        corner = corner.reshape(-1, 2)
+        return corner
+
     def __getitem__(self, idx):
         if torch.is_tensor(idx):
             idx = idx.tolist()
         img_name = self.root_dir+self.landmarks_frame.iloc[idx, 2]
-        print(self.landmarks_frame.iloc[idx, 2])
+        #print(self.landmarks_frame.iloc[idx, 2])
         image = io.imread(img_name)
         landmarks = self.landmarks_frame.iloc[idx, 10]
         landmarks= landmarks.strip("][").replace("'",'')\
         .replace('"','').split(', ')
         landmarks = np.array(landmarks)
         landmarks = landmarks.astype('float')
+        landmarks = self.four_corner(landmarks)
+        #print (landmarks)
         sample = {'image': image, 'landmarks': landmarks}
 
         if self.transform:
