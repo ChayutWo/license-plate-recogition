@@ -29,9 +29,10 @@ PART I: Construct train data generator and test data generator
 
 # Compose transformation for dataloader
 # Reshape -> Separate Real and Imaginary Layer -> Convert to Tensor
-composed = transforms.Compose([reshapeSignal(narray, npulse),
-                               separateComplexLayers(),
-                               transforms.ToTensor()])
+composed = transforms.Compose([transforms.RandomHorizontalFlip(p=0.5),
+                               transforms.RandomRotation(degrees=10),
+                               torchvision.transforms.ColorJitter(brightness=0.1, contrast=0.1,
+                                                                  saturation=0.1, hue=0.1)])
 
 # Train and test dataset using RadarDataset class
 traindata = RadarDataset(train_csv, train_path, composed)

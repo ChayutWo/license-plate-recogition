@@ -35,8 +35,12 @@ def show_landmarks(image, box):
     plt.pause(100)  # pause a bit so that plots are updated
 
 transform.rotate(10)
-face_dataset = dataloader.LicenseLandmarksDataset(csv_file='directory_training.csv',\
-root_dir='dataset/UFPR-ALPR dataset/training',transform=transform.rotate(10))
+composed = transforms.Compose([transforms.RandomHorizontalFlip(p=0.5),
+                               transforms.RandomRotation(degrees=10),
+                               transforms.ColorJitter(brightness=0.1, contrast=0.1,
+                                                      saturation=0.1, hue=0.1)])
+face_dataset = dataloader.LicenseLandmarksDataset(csv_file='directory_training.csv',
+                                                  root_dir='dataset/UFPR-ALPR dataset/training',transform=composed)
 
 fig = plt.figure()
 
