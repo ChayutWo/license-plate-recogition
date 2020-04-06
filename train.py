@@ -29,19 +29,24 @@ PART I: Construct train data generator and test data generator
 
 # Compose transformation for dataloader
 # Reshape -> Separate Real and Imaginary Layer -> Convert to Tensor
-composed = transforms.Compose([transforms.RandomHorizontalFlip(p=0.5),
-                               transforms.RandomRotation(degrees=10),
-                               torchvision.transforms.ColorJitter(brightness=0.1, contrast=0.1,
-                                                                  saturation=0.1, hue=0.1)])
+composed = transforms.Compose([HorizontalFlip(p=0.5),
+                               rotate(Maxangle=10),
+                               ColorJitter(brightness=0.1, contrast=0.1,
+                                           saturation=0.1, hue=0.1)])
 
 # Train and test dataset using RadarDataset class
-traindata = RadarDataset(train_csv, train_path, composed)
-testdata = RadarDataset(test_csv, test_path, composed)
+traindata = LicenseLandmarksDataset(train_csv, train_path, composed)
+validatedata = LicenseLandmarksDataset(validate_csv, validate_path, composed)
+testdata = LicenseLandmarksDataset(test_csv, test_path, composed)
 
 # Train and test dataloader setup
 train_loader = torch.utils.data.DataLoader(traindata,
                                            batch_size=train_batch_size, shuffle=True,
                                            num_workers=8, pin_memory=True)
+
+validation_loader = torch.utils.data.DataLoader(validatedata,
+                                          batch_size=test_batch_size, shuffle=False,
+                                          num_workers=8, pin_memory=True)
 
 test_loader = torch.utils.data.DataLoader(testdata,
                                           batch_size=test_batch_size, shuffle=False,
@@ -59,15 +64,14 @@ model_CNN = create_model(model_name, in_channels, out_channels).to(device)
 
 # weight
 weight = torch.tensor([0.7, 1.5, 3.25, 3.25, 2.25], dtype=torch.float)
-criterion = nn.CrossEntropyLoss(weight=weight)
-#criterion = nn.CrossEntropyLoss()
+criterion = nn.MSELoss()
+
 criterion = criterion.to(device)
 optimizer = make_optimizer(optimizer_name, model_CNN, lr=lr, momentum=0.9, weight_decay=0)
 scheduler = make_scheduler(scheduler_name, optimizer, milestones=milestones, factor=0.5)
 
 # training and testing loss
 acc_0 = test(model_CNN, device, test_loader, criterion, 0)
-acc = []
 train_loss = []
 test_loss = []
 
@@ -81,10 +85,9 @@ model_path = model_name + '.pth'
 
 for epoch in range(1, num_epochs+1):
     train_loss_i = train(model_CNN, device, train_loader, criterion, optimizer, epoch)
-    test_loss_i, acc_i = test(model_CNN, device, test_loader, criterion, epoch)
+    test_loss_i = test(model_CNN, device, test_loader, criterion, epoch)
     scheduler.step()
     print('Optimizer Learning rate: {0:.5f}'.format(optimizer.param_groups[0]['lr']))
-    acc.append(acc_i)
     train_loss.append(train_loss_i)
     test_loss.append(test_loss_i)
     if best_loss > test_loss_i:
@@ -94,5 +97,4 @@ for epoch in range(1, num_epochs+1):
         torch.save(model_CNN.state_dict(), model_path)
         best_loss = test_loss_i
 
-plot_result(train_loss, test_loss, acc, num_epochs)
-plot_confusion_matrix(model_path, test_loader, model_name, in_channels, out_channels)
+plot_result(train_loss, test_loss, num_epochs)

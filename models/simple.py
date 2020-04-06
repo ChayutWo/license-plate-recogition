@@ -6,7 +6,7 @@ from utils.variables import *
 
 # Simple model for quick training
 # CNN model class
-class CNN_radar_simple(nn.Module):
+class simple(nn.Module):
     def __init__(self, in_channels, out_channels):
         """
         initialize the network: 15,197
@@ -15,7 +15,7 @@ class CNN_radar_simple(nn.Module):
         - in_channels: number of input channels
         - out_channels: number of output channels (softmax)
         """
-        super(CNN_radar_simple, self).__init__()
+        super(simple, self).__init__()
         hidden_channels = [16, 16, 16, 16]
         # Conv1 and then maxpool
         self.conv1 = nn.Conv2d(in_channels=in_channels, out_channels=hidden_channels[0],

@@ -2,6 +2,8 @@
 import numpy as np
 from utils.variables import *
 import cv2
+from torchvision import transforms, utils
+import random
 
 # Transformation class to be performed while loading
 class rotate(object):
@@ -11,12 +13,9 @@ class rotate(object):
     output: 1 channel image of dimension narrayxnpulsex1
     """
 
-    def __init__(self, angle):
-        self.angle = angle
+    def __init__(self, Maxangle):
+        self.Maxangle = Maxangle
 
-        if type(self.angle) == tuple:
-            assert len(self.angle) == 2, "Invalid range"
-        
     def rotate_img(self,image):
         # grab the dimensions of the image and then determine the
         # centre
@@ -46,33 +45,33 @@ class rotate(object):
     def rotate_box(self,corners,angle,  cx, cy, h, w):
 
         """Rotate the bounding box.
-
-
+​
+​
         Parameters
         ----------
-
+​
         corners : numpy.ndarray
             Numpy array of shape `N x 8` containing N bounding boxes each described by their
             corner co-ordinates `x1 y1 x2 y2 x3 y3 x4 y4`
-
+​
         angle : float
             angle by which the image is to be rotated
-
+​
         cx : int
             x coordinate of the center of image (about which the box will be rotated)
-
+​
         cy : int
             y coordinate of the center of image (about which the box will be rotated)
-
+​
         h : int
             height of the image
-
+​
         w : int
             width of the image
-
+​
         Returns
         -------
-
+​
         numpy.ndarray
             Numpy array of shape `N x 8` containing N rotated bounding boxes each described by their
             corner co-ordinates `x1 y1 x2 y2 x3 y3 x4 y4`
@@ -100,6 +99,7 @@ class rotate(object):
         return calculated
 
     def __call__(self, sample):
+        self.angle = np.random.uniform(low = -self.Maxangle, high = self.Maxangle)
         image, landmarks = sample['image'], sample['landmarks']
         # change dim to [width, height, 1]
         (h, w) = image.shape[:2]
@@ -112,29 +112,49 @@ class rotate(object):
         return {'image': image, 'landmarks': landmarks}
 
 class HorizontalFlip(object):
-    def __init__(self):
+    def __init__(self,p=0.5):
+        self.p = p
         pass
     """
      Randomly horizontally flips the Image
-
-
+​
+​
     Returns
     -------
-
+​
     numpy.ndaaray
         Flipped image in the numpy format of shape `HxWxC`
-
+​
     numpy.ndarray
         corner of the box that identifies license plate
-
+​
     """
 
 
     def __call__(self, sample):
         image, landmarks = sample['image'], sample['landmarks']
         img_center = np.array(image.shape[:2])[::-1]/2
-        image =  image[:,::-1,:]
-        landmarks[:,0] += 2*(img_center[0] - landmarks[:,0])
+        if random.random() < self.p:
+            image =  image[:,::-1,:]
+            landmarks[:,0] += 2*(img_center[0] - landmarks[:,0])
+        return {'image': image, 'landmarks': landmarks}
 
 
+class ColorJitter(object):
+    def __init__(self,brightness=0.1, contrast=0.1,saturation=0.1, hue=0.1):
+        self.brightness=brightness
+        self.contrast=contrast
+        self.saturation=saturation
+        self.hue=hue
+        pass
+
+    def __call__(self, sample):
+        image, landmarks = sample['image'], sample['landmarks']
+        jitter = transforms.ColorJitter(brightness=self.brightness,
+                                        contrast=self.contrast,
+                                        saturation=self.saturation,
+                                        hue=self.hue)
+        transformToPIL = transforms.ToPILImage()
+        image = transformToPIL(image)
+        image = jitter(image)
         return {'image': image, 'landmarks': landmarks}

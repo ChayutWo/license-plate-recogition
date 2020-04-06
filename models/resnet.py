@@ -6,7 +6,7 @@ from utils.variables import *
 
 
 # CNN model class
-class CNN_radar_resnet(nn.Module):
+class resnet(nn.Module):
     def __init__(self, in_channels, out_channels):
         """
         initialize the network: 178,825
@@ -15,7 +15,7 @@ class CNN_radar_resnet(nn.Module):
         - in_channels: number of input channels
         - out_channels: number of output channels (softmax)
         """
-        super(CNN_radar_resnet, self).__init__()
+        super(resnet, self).__init__()
         hidden_channels = [8, 16, 32, 64]
 
         # Conv1 with outchannel 8 and then maxpool
