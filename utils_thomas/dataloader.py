@@ -39,6 +39,15 @@ class LicenseLandmarksDataset(Dataset):
         corner = corner.reshape(-1, 2)
         return corner
 
+    def get_box (self, landmarks):
+        x_max = np.max(landmarks[:,0])
+        y_max = np.max(landmarks[:,1])
+        x_min = np.min(landmarks[:,0])
+        y_min = np.min(landmarks[:,1])
+        width = x_max - x_min
+        height = y_max - y_min
+        return [x_min, y_min, width,height]
+
     def __getitem__(self, idx):
         if torch.is_tensor(idx):
             idx = idx.tolist()
@@ -56,5 +65,8 @@ class LicenseLandmarksDataset(Dataset):
 
         if self.transform:
             sample = self.transform(sample)
-
+        print(sample['landmarks'])
+        box = self.get_box(sample['landmarks'])
+        sample = {'image': sample['image'], 'box': box}
+        print (box)
         return sample

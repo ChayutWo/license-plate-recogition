@@ -16,7 +16,7 @@ class rotate(object):
 
         if type(self.angle) == tuple:
             assert len(self.angle) == 2, "Invalid range"
-
+        
     def rotate_img(self,image):
         # grab the dimensions of the image and then determine the
         # centre
