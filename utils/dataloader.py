@@ -4,7 +4,7 @@ from torch.utils.data import Dataset
 import pandas as pd
 # from scipy.io import loadmat
 import numpy as np
-from skimage import io, transform
+from skimage import io
 import os
 import os.path
 from utils.variables import *
@@ -53,6 +53,8 @@ class LicenseLandmarksDataset(Dataset):
             idx = idx.tolist()
         img_name = self.root_dir + self.landmarks_frame.iloc[idx, 2]
         image = io.imread(img_name)
+        W, H, C = image.shape
+        image = image.reshape(C, W, H)
         landmarks = self.landmarks_frame.iloc[idx, 10]
         landmarks = landmarks.strip("][").replace("'", '') \
             .replace('"', '').split(', ')
