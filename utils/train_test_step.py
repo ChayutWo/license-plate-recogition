@@ -36,6 +36,7 @@ def test(model, device, test_loader, criterion, epoch):
     test_loss = 0
     with torch.no_grad():
         for sample in test_loader:
+            print(sample['image'].size(),sample['box'].size())
             data, target = sample['image'].to(device), sample['box'].to(device)
             output = model(data)
 

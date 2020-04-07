@@ -63,5 +63,7 @@ class LicenseLandmarksDataset(Dataset):
         if self.transform:
             sample = self.transform(sample)
         box = self.get_box(sample['landmarks'])
+        box = np.array(box)
+        box = box.astype('float')
         sample = {'image': sample['image'], 'box': box}
         return sample

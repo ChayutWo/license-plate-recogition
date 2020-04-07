@@ -38,7 +38,8 @@ class rotate(object):
         M[1, 2] += (nH / 2) - cY
 
         # perform the actual rotation and return the image
-        image = cv2.warpAffine(image, M, (nW, nH))
+        # image = cv2.warpAffine(image, M, (nW, nH))
+        image = cv2.warpAffine(image, M, (image.shape[0],image.shape[1]))
 
     #    image = cv2.resize(image, (w,h))
         return image
@@ -106,6 +107,11 @@ class rotate(object):
         (cX, cY) = (w // 2, h // 2)
         image = self.rotate_img(image)
         # (h, w) = image.shape[:2]
+        # transformToPIL = transforms.ToPILImage()
+        # image = transformToPIL(image)
+        # image = transforms.RandomRotation(image)
+        # transformToTensor = transforms.ToTensor()
+        # image = transformToTensor(image)
         # (cX, cY) = (w // 2, h // 2)
         landmarks = self.rotate_box(landmarks, self.angle,cX,cY,h,w)
         #landmarks = self.get_enclosing_box(landmarks)
@@ -157,4 +163,6 @@ class ColorJitter(object):
         transformToPIL = transforms.ToPILImage()
         image = transformToPIL(image)
         image = jitter(image)
+        transformToTensor = transforms.ToTensor()
+        image = transformToTensor(image)
         return {'image': image, 'landmarks': landmarks}
