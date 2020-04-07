@@ -6,7 +6,8 @@ import torch.optim
 """
 Hyper-parameters that can be changed
 """
-device = 'cuda' if torch.cuda.is_available() else 'cpu'
+# device = 'cuda' if torch.cuda.is_available() else 'cpu'
+device = 'cpu'
 train_batch_size = 64
 test_batch_size = 128
 # optimizer name: SGD or Adam
