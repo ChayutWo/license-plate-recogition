@@ -36,7 +36,7 @@ def test(model, device, test_loader, criterion, epoch):
     test_loss = 0
     with torch.no_grad():
         for sample in test_loader:
-            data, target = sample['image'].to(device), sample['box'].to(device)
+            data, target = sample['image'].to(device), [i.to(device) for i in sample['box']]
             output = model(data)
 
             # Compute loss and do back propagation

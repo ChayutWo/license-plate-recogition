@@ -59,7 +59,7 @@ class resnet(nn.Module):
 
     def forward(self, x):
         # x -> conv1 -> bn1 -> ReLU -> maxpool
-        x = F.leaky_relu(self.bn1(self.conv1(x)))
+        x = F.leaky_relu(self.bn1(self.conv1(x.float())))
         x = self.maxpool(x)
 
         # x -> Resnet block 1

@@ -12,7 +12,7 @@ import pandas as pd
 import torch.utils.data as data
 import os
 import os.path
-from torchsummary import summary
+# from torchsummary import summary
 
 from models.generate import *
 
@@ -29,10 +29,11 @@ PART I: Construct train data generator and test data generator
 
 # Compose transformation for dataloader
 # Reshape -> Separate Real and Imaginary Layer -> Convert to Tensor
-composed = transforms.Compose([HorizontalFlip(p=0.5),
-                               rotate(Maxangle=10),
-                               ColorJitter(brightness=0.1, contrast=0.1,
-                                           saturation=0.1, hue=0.1)])
+composed = transforms.Compose([HorizontalFlip(p=0),
+                               # rotate(Maxangle=10),
+                               # ColorJitter(brightness=0.1, contrast=0.1,
+                               #             saturation=0.1, hue=0.1)
+                               ])
 
 # Train and test dataset using RadarDataset class
 traindata = LicenseLandmarksDataset(train_csv, train_path, composed)
@@ -50,7 +51,7 @@ validation_loader = torch.utils.data.DataLoader(validatedata,
 
 test_loader = torch.utils.data.DataLoader(testdata,
                                           batch_size=test_batch_size, shuffle=False,
-                                          num_workers=8, pin_memory=True)
+                                          num_workers=0, pin_memory=True)
 
 ####################################################################
 """

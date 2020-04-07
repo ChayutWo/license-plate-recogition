@@ -45,7 +45,7 @@ class simple(nn.Module):
 
     def forward(self, x):
         # x -> conv1 -> bn1 -> ReLU -> maxpool1
-        x = F.leaky_relu(self.bn1(self.conv1(x)))
+        x = F.leaky_relu(self.bn1(self.conv1(x.float())))
         x = self.maxpool1(x)
 
         # x -> conv2 -> bn2 -> ReLU -> maxpool2
