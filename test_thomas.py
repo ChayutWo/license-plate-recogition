@@ -16,13 +16,14 @@ import os.path
 import numpy as np
 import pandas as pd
 import re
-from utils_thomas import dataloader, transform
+from utils import dataloader, transform
 
 
 composed = transforms.Compose([transform.HorizontalFlip(p=0.5),
                                transform.rotate(Maxangle=10),
                                transform.ColorJitter(brightness=0.1, contrast=0.1,
-                                                     saturation=0.1, hue=0.1)])
+                                                     saturation=0.1, hue=0.1),
+                                transform.resize()])
 face_dataset = dataloader.LicenseLandmarksDataset(csv_file='directory_training.csv',
                                                   root_dir='dataset/UFPR-ALPR dataset/training',transform=composed)
 

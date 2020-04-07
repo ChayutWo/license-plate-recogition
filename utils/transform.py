@@ -4,6 +4,7 @@ from utils.variables import *
 import cv2
 from torchvision import transforms, utils
 import random
+from skimage import transform
 
 # Transformation class to be performed while loading
 class rotate(object):
@@ -39,9 +40,17 @@ class rotate(object):
 
         # perform the actual rotation and return the image
         # image = cv2.warpAffine(image, M, (nW, nH))
+        image_width = image.shape[0]
+        image_height = image.shape[1]
+        image = cv2.warpAffine(image, M, (image_width,image_height))
         image_width = 1920
         image_height = 1080
-        image = cv2.warpAffine(image, M, (image_width,image_height))
+        center_crop = transforms.CenterCrop((image_height,image_width))
+        transformToPIL = transforms.ToPILImage()
+        image = transformToPIL(image)
+        image = center_crop(image)
+
+
 
     #    image = cv2.resize(image, (w,h))
         return image
@@ -162,9 +171,37 @@ class ColorJitter(object):
                                         contrast=self.contrast,
                                         saturation=self.saturation,
                                         hue=self.hue)
-        transformToPIL = transforms.ToPILImage()
-        image = transformToPIL(image)
+
         image = jitter(image)
-        transformToTensor = transforms.ToTensor()
-        image = transformToTensor(image)
+
+        return {'image': image, 'landmarks': landmarks}
+
+class resize(object):
+    def __init__(self):
+        pass
+    """
+     Randomly horizontally flips the Image
+​
+​
+    Returns
+    -------
+​
+    numpy.ndaaray
+        Flipped image in the numpy format of shape `HxWxC`
+​
+    numpy.ndarray
+        corner of the box that identifies license plate
+​
+    """
+
+
+    def __call__(self, sample):
+        image, landmarks = sample['image'], sample['landmarks']
+        image_width = int(1920/3)
+        image_height = int(1080/3)
+        # image = transform.resize(image, (image_width, image_height,3))
+        res = transforms.Resize((image_height,image_width))
+        image = res(image)
+        # transformToTensor = transforms.ToTensor()
+        # image = transformToTensor(image)
         return {'image': image, 'landmarks': landmarks}
