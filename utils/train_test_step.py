@@ -34,11 +34,12 @@ def train(model, device, train_loader, criterion, optimizer, epoch):
 def test(model, device, test_loader, criterion, epoch):
     model.eval()
     test_loss = 0
+
     with torch.no_grad():
         for sample in test_loader:
-            print(sample['image'].size(),sample['box'].size())
             data, target = sample['image'].to(device), sample['box'].to(device)
             output = model(data)
+            print(sample['box'].size())
 
             # Compute loss and do back propagation
             lossx = criterion(output[0], target[0])

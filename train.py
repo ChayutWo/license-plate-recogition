@@ -42,16 +42,17 @@ testdata = LicenseLandmarksDataset(test_csv, test_path, composed)
 # Train and test dataloader setup
 train_loader = torch.utils.data.DataLoader(traindata,
                                            batch_size=train_batch_size, shuffle=True,
-                                           num_workers=8, pin_memory=True)
+                                           num_workers=0, pin_memory=True)
 
 validation_loader = torch.utils.data.DataLoader(validatedata,
                                           batch_size=test_batch_size, shuffle=False,
-                                          num_workers=8, pin_memory=True)
+                                          num_workers=0, pin_memory=True)
 
 test_loader = torch.utils.data.DataLoader(testdata,
                                           batch_size=test_batch_size, shuffle=False,
-                                          num_workers=8, pin_memory=True)
+                                          num_workers=0, pin_memory=True)
 
+print('>> Finish creating data loader')
 ####################################################################
 """
 PART II: Preparation for training
@@ -61,19 +62,21 @@ torch.cuda.manual_seed(5)
 
 # Create model and setup criterior, optimizer, and scheduler
 model_CNN = create_model(model_name, in_channels, out_channels).to(device)
-
-# weight
-weight = torch.tensor([0.7, 1.5, 3.25, 3.25, 2.25], dtype=torch.float)
+summary(model_CNN, (3, 1920, 1080))
+# make criterion
 criterion = nn.MSELoss()
 
 criterion = criterion.to(device)
 optimizer = make_optimizer(optimizer_name, model_CNN, lr=lr, momentum=0.9, weight_decay=0)
 scheduler = make_scheduler(scheduler_name, optimizer, milestones=milestones, factor=0.5)
 
+print('>> Finish creating model')
+print(device)
+
 # training and testing loss
-acc_0 = test(model_CNN, device, test_loader, criterion, 0)
+acc_0 = test(model_CNN, device, validation_loader, criterion, 0)
 train_loss = []
-test_loss = []
+validation_loss = []
 
 ####################################################################
 """
@@ -85,16 +88,16 @@ model_path = model_name + '.pth'
 
 for epoch in range(1, num_epochs+1):
     train_loss_i = train(model_CNN, device, train_loader, criterion, optimizer, epoch)
-    test_loss_i = test(model_CNN, device, test_loader, criterion, epoch)
+    validation_loss_i = test(model_CNN, device, validation_loader, criterion, epoch)
     scheduler.step()
     print('Optimizer Learning rate: {0:.5f}'.format(optimizer.param_groups[0]['lr']))
     train_loss.append(train_loss_i)
-    test_loss.append(test_loss_i)
-    if best_loss > test_loss_i:
+    validation_loss.append(validation_loss_i)
+    if best_loss > validation_loss_i:
         # if the current loss is lower than the best possible loss
         # save the model
-        print('>>Saving the model: Test loss at {:.4f}'.format(test_loss_i))
+        print('>>Saving the model: Test loss at {:.4f}'.format(validation_loss_i))
         torch.save(model_CNN.state_dict(), model_path)
-        best_loss = test_loss_i
+        best_loss = validation_loss_i
 
-plot_result(train_loss, test_loss, num_epochs)
+plot_result(train_loss, validation_loss, num_epochs)

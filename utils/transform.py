@@ -39,7 +39,9 @@ class rotate(object):
 
         # perform the actual rotation and return the image
         # image = cv2.warpAffine(image, M, (nW, nH))
-        image = cv2.warpAffine(image, M, (image.shape[0],image.shape[1]))
+        image_width = 1920
+        image_height = 1080
+        image = cv2.warpAffine(image, M, (image_width,image_height))
 
     #    image = cv2.resize(image, (w,h))
         return image
