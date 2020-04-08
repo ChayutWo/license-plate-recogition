@@ -32,7 +32,8 @@ PART I: Construct train data generator and test data generator
 composed = transforms.Compose([HorizontalFlip(p=0.5),
                                rotate(Maxangle=10),
                                ColorJitter(brightness=0.1, contrast=0.1,
-                                           saturation=0.1, hue=0.1)])
+                                                     saturation=0.1, hue=0.1),
+                               resize()])
 
 # Train and test dataset using RadarDataset class
 traindata = LicenseLandmarksDataset(train_csv, train_path, composed)
@@ -62,7 +63,7 @@ torch.cuda.manual_seed(5)
 
 # Create model and setup criterior, optimizer, and scheduler
 model_CNN = create_model(model_name, in_channels, out_channels).to(device)
-summary(model_CNN, (3, 1920, 1080))
+
 # make criterion
 criterion = nn.MSELoss()
 
@@ -71,10 +72,10 @@ optimizer = make_optimizer(optimizer_name, model_CNN, lr=lr, momentum=0.9, weigh
 scheduler = make_scheduler(scheduler_name, optimizer, milestones=milestones, factor=0.5)
 
 print('>> Finish creating model')
-print(device)
+print('Using {}'.format(device))
 
 # training and testing loss
-acc_0 = test(model_CNN, device, validation_loader, criterion, 0)
+#acc_0 = test(model_CNN, device, validation_loader, criterion, 0)
 train_loss = []
 validation_loss = []
 

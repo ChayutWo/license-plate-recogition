@@ -8,14 +8,14 @@ Hyper-parameters that can be changed
 """
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
 
-train_batch_size = 64
-test_batch_size = 64
+train_batch_size = 128
+test_batch_size = 128
 # optimizer name: SGD or Adam
 optimizer_name = 'SGD'
-lr = 1e-3
+lr = 1e-5
 scheduler_name = 'MultiStepLR'
-milestones = [5]
-num_epochs = 10
+milestones = [2]
+num_epochs = 3
 
 in_channels = 3
 out_channels = 4

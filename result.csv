@@ -1,0 +1,4 @@
+iteration,train_loss,test_loss
+1,145378.8177777778,"tensor(97377.0234, device='cuda:0')"
+2,40244.57611111111,"tensor(9365095., device='cuda:0')"
+3,12286.934149305556,"tensor(26484.9883, device='cuda:0')"

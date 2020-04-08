@@ -23,7 +23,8 @@ composed = transforms.Compose([transform.HorizontalFlip(p=0.5),
                                transform.rotate(Maxangle=10),
                                transform.ColorJitter(brightness=0.1, contrast=0.1,
                                                      saturation=0.1, hue=0.1),
-                                transform.resize()])
+                               transform.resize()])
+
 face_dataset = dataloader.LicenseLandmarksDataset(csv_file='directory_training.csv',
                                                   root_dir='dataset/UFPR-ALPR dataset/training',transform=composed)
 

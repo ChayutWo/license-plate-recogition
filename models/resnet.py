@@ -60,7 +60,7 @@ class resnet(nn.Module):
         # Average pool
         self.avgpool = nn.AvgPool2d(kernel_size=3, stride=2, padding=1)
         # FC1 and FC2
-        self.fc1 = nn.Linear(in_features=768, out_features=50)
+        self.fc1 = nn.Linear(in_features=128, out_features=50)
         self.fc2 = nn.Linear(in_features=50, out_features=out_channels)
 
     def forward(self, x):

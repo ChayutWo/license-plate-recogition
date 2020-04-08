@@ -39,21 +39,11 @@ class rotate(object):
         M[1, 2] += (nH / 2) - cY
 
         # perform the actual rotation and return the image
-        # image = cv2.warpAffine(image, M, (nW, nH))
-        image_width = image.shape[0]
-        image_height = image.shape[1]
-        image = cv2.warpAffine(image, M, (image_width,image_height))
-        image_width = 1920
-        image_height = 1080
-        center_crop = transforms.CenterCrop((image_height,image_width))
+        image = cv2.warpAffine(image, M, (nW,nH))
         transformToPIL = transforms.ToPILImage()
         image = transformToPIL(image)
-        image = center_crop(image)
-
-
-
-    #    image = cv2.resize(image, (w,h))
         return image
+
     def rotate_box(self,corners,angle,  cx, cy, h, w):
 
         """Rotate the bounding box.
@@ -105,9 +95,7 @@ class rotate(object):
         M[1, 2] += (nH / 2) - cy
         # Prepare the vector to be transformed
         calculated = np.dot(M,corners.T).T
-
         calculated = calculated.reshape(-1,2)
-
         return calculated
 
     def __call__(self, sample):
@@ -117,15 +105,7 @@ class rotate(object):
         (h, w) = image.shape[:2]
         (cX, cY) = (w // 2, h // 2)
         image = self.rotate_img(image)
-        # (h, w) = image.shape[:2]
-        # transformToPIL = transforms.ToPILImage()
-        # image = transformToPIL(image)
-        # image = transforms.RandomRotation(image)
-        # transformToTensor = transforms.ToTensor()
-        # image = transformToTensor(image)
-        # (cX, cY) = (w // 2, h // 2)
         landmarks = self.rotate_box(landmarks, self.angle,cX,cY,h,w)
-        #landmarks = self.get_enclosing_box(landmarks)
         return {'image': image, 'landmarks': landmarks}
 
 class HorizontalFlip(object):
@@ -199,9 +179,13 @@ class resize(object):
         image, landmarks = sample['image'], sample['landmarks']
         image_width = int(1920/3)
         image_height = int(1080/3)
-        # image = transform.resize(image, (image_width, image_height,3))
+        original_width = image.width
+        original_height = image.height
         res = transforms.Resize((image_height,image_width))
         image = res(image)
-        # transformToTensor = transforms.ToTensor()
-        # image = transformToTensor(image)
+        landmarks[:,1] = landmarks[:,1]*image_height/original_height
+        landmarks[:, 0] = landmarks[:, 0] * image_width / original_width
+        transformToTensor = transforms.ToTensor()
+        image = transformToTensor(image)
+
         return {'image': image, 'landmarks': landmarks}

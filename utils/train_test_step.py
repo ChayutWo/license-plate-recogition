@@ -8,7 +8,7 @@ def train(model, device, train_loader, criterion, optimizer, epoch):
     model.train()
     for batch_idx, sample in enumerate(train_loader):
         data, target = sample['image'].to(device), sample['box'].to(device)
-
+        target = target.float()
         # Reset gradient
         optimizer.zero_grad()
 
@@ -22,7 +22,7 @@ def train(model, device, train_loader, criterion, optimizer, epoch):
         lossh = criterion(output[3], target[3])
         loss = lossx + lossy + lossw + lossh
         loss.backward()
-
+        print('>> training with batch id {}, Loss {:.4f}'.format(batch_idx, loss.item()))
         # Update parameters
         optimizer.step()
         train_loss += loss.item()
@@ -38,9 +38,8 @@ def test(model, device, test_loader, criterion, epoch):
     with torch.no_grad():
         for sample in test_loader:
             data, target = sample['image'].to(device), sample['box'].to(device)
+            target = target.float()
             output = model(data)
-            print(sample['box'].size())
-
             # Compute loss and do back propagation
             lossx = criterion(output[0], target[0])
             lossy = criterion(output[1], target[1])
