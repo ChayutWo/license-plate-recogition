@@ -22,7 +22,7 @@ def train(model, device, train_loader, criterion, optimizer, epoch):
         lossh = criterion(output[3], target[3])
         loss = lossx + lossy + lossw + lossh
         loss.backward()
-        print('>> training with batch id {}, Loss {:.4f}'.format(batch_idx, loss.item()))
+        # print('>> training with batch id {}, Loss {:.4f}'.format(batch_idx, loss.item()))
         # Update parameters
         optimizer.step()
         train_loss += loss.item()
@@ -46,7 +46,7 @@ def test(model, device, test_loader, criterion, epoch):
             lossw = criterion(output[2], target[2])
             lossh = criterion(output[3], target[3])
             loss = lossx + lossy + lossw + lossh
-            test_loss += loss
+            test_loss += loss.item()
 
     test_loss = (test_loss * test_batch_size) / len(test_loader.dataset)
     print('Test({}): Loss: {:.4f}'.format(epoch, test_loss))

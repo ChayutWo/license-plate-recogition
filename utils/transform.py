@@ -40,8 +40,6 @@ class rotate(object):
 
         # perform the actual rotation and return the image
         image = cv2.warpAffine(image, M, (nW,nH))
-        transformToPIL = transforms.ToPILImage()
-        image = transformToPIL(image)
         return image
 
     def rotate_box(self,corners,angle,  cx, cy, h, w):
@@ -177,14 +175,31 @@ class resize(object):
 
     def __call__(self, sample):
         image, landmarks = sample['image'], sample['landmarks']
-        image_width = int(1920/3)
-        image_height = int(1080/3)
+        image_width = 640
+        image_height = 360
         original_width = image.width
         original_height = image.height
         res = transforms.Resize((image_height,image_width))
         image = res(image)
         landmarks[:,1] = landmarks[:,1]*image_height/original_height
         landmarks[:, 0] = landmarks[:, 0] * image_width / original_width
+
+        return {'image': image, 'landmarks': landmarks}
+
+class PILconvert(object):
+    def __init__(self):
+        pass
+    def __call__(self, sample):
+        image, landmarks = sample['image'], sample['landmarks']
+        transformToPIL = transforms.ToPILImage()
+        image = transformToPIL(image)
+        return {'image': image, 'landmarks': landmarks}
+
+class tensorize(object):
+    def __init__(self):
+        pass
+    def __call__(self, sample):
+        image, landmarks = sample['image'], sample['landmarks']
         transformToTensor = transforms.ToTensor()
         image = transformToTensor(image)
 

@@ -30,15 +30,19 @@ PART I: Construct train data generator and test data generator
 # Compose transformation for dataloader
 # Reshape -> Separate Real and Imaginary Layer -> Convert to Tensor
 composed = transforms.Compose([HorizontalFlip(p=0.5),
-                               rotate(Maxangle=10),
-                               ColorJitter(brightness=0.1, contrast=0.1,
-                                                     saturation=0.1, hue=0.1),
-                               resize()])
+                               rotate(Maxangle=5),
+                               PILconvert(),
+                               ColorJitter(brightness=0.2, contrast=0.2,
+                                                     saturation=0.2, hue=0.2),
+                               resize(),
+                               tensorize()])
+
+composed_test = transforms.Compose([PILconvert(), resize(), tensorize()])
 
 # Train and test dataset using RadarDataset class
 traindata = LicenseLandmarksDataset(train_csv, train_path, composed)
-validatedata = LicenseLandmarksDataset(validate_csv, validate_path, composed)
-testdata = LicenseLandmarksDataset(test_csv, test_path, composed)
+validatedata = LicenseLandmarksDataset(validate_csv, validate_path, composed_test)
+testdata = LicenseLandmarksDataset(test_csv, test_path, composed_test)
 
 # Train and test dataloader setup
 train_loader = torch.utils.data.DataLoader(traindata,
@@ -69,9 +73,10 @@ criterion = nn.MSELoss()
 
 criterion = criterion.to(device)
 optimizer = make_optimizer(optimizer_name, model_CNN, lr=lr, momentum=0.9, weight_decay=0)
-scheduler = make_scheduler(scheduler_name, optimizer, milestones=milestones, factor=0.5)
+scheduler = make_scheduler(scheduler_name, optimizer, milestones=milestones, factor=0.1)
 
 print('>> Finish creating model')
+summary(model_CNN, (3, 640, 360))
 print('Using {}'.format(device))
 
 # training and testing loss
@@ -100,5 +105,8 @@ for epoch in range(1, num_epochs+1):
         print('>>Saving the model: Test loss at {:.4f}'.format(validation_loss_i))
         torch.save(model_CNN.state_dict(), model_path)
         best_loss = validation_loss_i
-
+    if epoch == num_epochs:
+        # Last loop, evaluate on test set
+        print('Complete the training process, Evaluating on the test set...')
+        test_loss = test(model_CNN, device, test_loader, criterion, epoch)
 plot_result(train_loss, validation_loss, num_epochs)

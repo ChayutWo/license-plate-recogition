@@ -53,11 +53,12 @@ class LicenseLandmarksDataset(Dataset):
         img_name = self.root_dir+self.landmarks_frame.iloc[idx, 2]
         image = io.imread(img_name)
         landmarks = self.landmarks_frame.iloc[idx, 10]
-        landmarks= landmarks.strip("][").replace("'",'')\
-        .replace('"','').split(', ')
+        landmarks= landmarks.strip("][").replace("'",'').replace('"','').split(', ')
         landmarks = np.array(landmarks)
         landmarks = landmarks.astype('float')
         landmarks = self.four_corner(landmarks)
+        # we change the size of the image
+        landmarks = landmarks/3
         sample = {'image': image, 'landmarks': landmarks}
 
         if self.transform:
