@@ -11,7 +11,7 @@ device = 'cuda' if torch.cuda.is_available() else 'cpu'
 train_batch_size = 32
 test_batch_size = 256
 # optimizer name: SGD or Adam
-optimizer_name = 'SGD'
+optimizer_name = 'Adam'
 lr = 1e-4
 scheduler_name = 'MultiStepLR'
 milestones = [30]
