@@ -28,7 +28,6 @@ PART I: Construct train data generator and test data generator
 """
 
 # Compose transformation for dataloader
-# Reshape -> Separate Real and Imaginary Layer -> Convert to Tensor
 composed = transforms.Compose([HorizontalFlip(p=0.5),
                                rotate(Maxangle=5),
                                PILconvert(),
@@ -80,7 +79,7 @@ summary(model_CNN, (3, 640, 360))
 print('Using {}'.format(device))
 
 # training and testing loss
-#acc_0 = test(model_CNN, device, validation_loader, criterion, 0)
+acc_0 = test(model_CNN, device, validation_loader, criterion, 0)
 train_loss = []
 validation_loss = []
 
