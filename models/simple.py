@@ -16,10 +16,10 @@ class simple(nn.Module):
         - out_channels: number of output channels (softmax)
         """
         super(simple, self).__init__()
-        hidden_channels = [16, 16, 16, 16]
+        hidden_channels = [16, 32, 32, 64, 64]
         # Conv1 and then maxpool
         self.conv1 = nn.Conv2d(in_channels=in_channels, out_channels=hidden_channels[0],
-                               kernel_size=3, stride=1, padding=1, bias=True)
+                               kernel_size=5, stride=2, padding=1, bias=True)
         self.bn1 = nn.BatchNorm2d(hidden_channels[0])
         self.maxpool1 = nn.MaxPool2d(kernel_size=3, stride=2, padding=1)
 
@@ -33,15 +33,23 @@ class simple(nn.Module):
         self.conv3 = nn.Conv2d(in_channels=hidden_channels[1], out_channels=hidden_channels[2],
                                kernel_size=3, stride=1, padding=1, bias=True)
         self.bn3 = nn.BatchNorm2d(hidden_channels[2])
+        self.maxpool3 = nn.MaxPool2d(kernel_size=3, stride=2, padding=1)
 
         # Conv4
         self.conv4 = nn.Conv2d(in_channels=hidden_channels[2], out_channels=hidden_channels[3],
                                kernel_size=3, stride=1, padding=1, bias=True)
         self.bn4 = nn.BatchNorm2d(hidden_channels[3])
+        self.maxpool4 = nn.MaxPool2d(kernel_size=3, stride=2, padding=1)
+
+        # Conv5
+        self.conv5 = nn.Conv2d(in_channels=hidden_channels[3], out_channels=hidden_channels[4],
+                               kernel_size=3, stride=1, padding=1, bias=True)
+        self.bn5 = nn.BatchNorm2d(hidden_channels[4])
+        self.maxpool5 = nn.MaxPool2d(kernel_size=3, stride=2, padding=1)
 
         # FC1
-        self.fc1 = nn.Linear(in_features=384, out_features=20)
-        self.fc2 = nn.Linear(in_features=20, out_features=out_channels)
+        self.fc1 = nn.Linear(in_features=3840, out_features=50)
+        self.fc2 = nn.Linear(in_features=50, out_features=out_channels)
 
     def forward(self, x):
         # x -> conv1 -> bn1 -> ReLU -> maxpool1
@@ -54,9 +62,15 @@ class simple(nn.Module):
 
         # x -> conv3 -> bn3 -> ReLU
         x = F.leaky_relu(self.bn3(self.conv3(x)))
+        x = self.maxpool3(x)
 
         # x -> conv4 -> bn4 -> ReLU
         x = F.leaky_relu(self.bn4(self.conv4(x)))
+        x = self.maxpool4(x)
+
+        # x -> conv5 -> bn5 -> ReLU
+        x = F.leaky_relu(self.bn5(self.conv5(x)))
+        x = self.maxpool5(x)
 
         # Flatten
         x = x.view(-1, self.num_flat_features(x))
