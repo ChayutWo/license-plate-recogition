@@ -18,11 +18,11 @@ def train(model, device, train_loader, criterion, optimizer, epoch):
         # Compute loss and do back propagation
         lossx = criterion(output[0], target[0])
         lossy = criterion(output[1], target[1])
-        lossw = criterion(output[2], target[2])
-        lossh = criterion(output[3], target[3])
-        loss = lossx + lossy + lossw + lossh
+        #lossw = criterion(output[2], target[2])
+        #lossh = criterion(output[3], target[3])
+        #loss = lossx + lossy + lossw + lossh
+        loss = lossx + lossy
         loss.backward()
-        # print('>> training with batch id {}, Loss {:.4f}'.format(batch_idx, loss.item()))
         # Update parameters
         optimizer.step()
         train_loss += loss.item()
@@ -43,9 +43,10 @@ def test(model, device, test_loader, criterion, epoch):
             # Compute loss and do back propagation
             lossx = criterion(output[0], target[0])
             lossy = criterion(output[1], target[1])
-            lossw = criterion(output[2], target[2])
-            lossh = criterion(output[3], target[3])
-            loss = lossx + lossy + lossw + lossh
+            #lossw = criterion(output[2], target[2])
+            #lossh = criterion(output[3], target[3])
+            #loss = lossx + lossy + lossw + lossh
+            loss = lossx + lossy
             test_loss += loss.item()
 
     test_loss = (test_loss * test_batch_size) / len(test_loader.dataset)

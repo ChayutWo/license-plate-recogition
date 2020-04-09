@@ -105,6 +105,8 @@ for epoch in range(1, num_epochs+1):
         torch.save(model_CNN.state_dict(), model_path)
         best_loss = validation_loss_i
     if epoch == num_epochs:
+        # Save training model to evaluate performance on training set
+        torch.save(model_CNN.state_dict(), 'training_model.pth')
         # Last loop, evaluate on test set
         print('Complete the training process, Evaluating on the test set...')
         test_loss = test(model_CNN, device, test_loader, criterion, epoch)

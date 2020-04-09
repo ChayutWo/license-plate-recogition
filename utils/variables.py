@@ -8,18 +8,18 @@ Hyper-parameters that can be changed
 """
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
 
-train_batch_size = 32
+train_batch_size = 64
 test_batch_size = 256
 # optimizer name: SGD or Adam
-optimizer_name = 'SGD'
-lr = 1e-5
+optimizer_name = 'Adam'
+lr = 1e-2
 scheduler_name = 'MultiStepLR'
 milestones = [30]
-num_epochs = 50
+num_epochs = 100
 
 in_channels = 3
 out_channels = 4
-model_name = 'resnetS'
+model_name = 'resnet'
 
 train_csv = 'directory_training.csv'
 train_path = 'dataset/resized/UFPR-ALPR dataset/training'
