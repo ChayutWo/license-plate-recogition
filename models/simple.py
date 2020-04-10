@@ -48,7 +48,7 @@ class simple(nn.Module):
         self.maxpool5 = nn.MaxPool2d(kernel_size=3, stride=2, padding=1)
 
         # FC1
-        self.fc1 = nn.Linear(in_features=3840, out_features=50)
+        self.fc1 = nn.Linear(in_features=3136, out_features=50)
         self.fc2 = nn.Linear(in_features=50, out_features=out_channels)
 
     def forward(self, x):

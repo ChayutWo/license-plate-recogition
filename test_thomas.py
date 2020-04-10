@@ -20,14 +20,17 @@ from utils import dataloader, transform
 
 
 composed = transforms.Compose([transform.HorizontalFlip(p=0.5),
-                               transform.rotate(Maxangle=10),
+                               transform.rotate(Maxangle=5),
                                transform.PILconvert(),
                                transform.ColorJitter(brightness=0.1, contrast=0.1,
                                                      saturation=0.1, hue=0.1),
                                transform.resize()])
-composed = transforms.Compose([transform.PILconvert(), transform.resize()])
-face_dataset = dataloader.LicenseLandmarksDataset(csv_file='directory_training.csv',
-                                                  root_dir='dataset/resized/UFPR-ALPR dataset/training',transform=composed)
+#composed = transforms.Compose([transform.PILconvert()])
+
+csv_file = 'dataset/cropped/training.csv'
+root_dir = 'dataset/cropped/training/'
+face_dataset = dataloader.LicenseLandmarksDataset(csv_file=csv_file,
+                                                  root_dir=root_dir,transform=composed)
 
 fig = plt.figure()
 i = 200

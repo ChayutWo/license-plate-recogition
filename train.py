@@ -31,8 +31,8 @@ PART I: Construct train data generator and test data generator
 composed = transforms.Compose([HorizontalFlip(p=0.5),
                                rotate(Maxangle=5),
                                PILconvert(),
-                               ColorJitter(brightness=0.2, contrast=0.2,
-                                                     saturation=0.2, hue=0.2),
+                               ColorJitter(brightness=0.1, contrast=0.1,
+                                                     saturation=0.1, hue=0.1),
                                resize(),
                                tensorize()])
 
@@ -75,7 +75,7 @@ optimizer = make_optimizer(optimizer_name, model_CNN, lr=lr, momentum=0.9, weigh
 scheduler = make_scheduler(scheduler_name, optimizer, milestones=milestones, factor=0.1)
 
 print('>> Finish creating model')
-summary(model_CNN, (3, 640, 360))
+summary(model_CNN, (3, 450, 450))
 print('Using {}'.format(device))
 
 # training and testing loss
@@ -101,7 +101,8 @@ for epoch in range(1, num_epochs+1):
     if best_loss > validation_loss_i:
         # if the current loss is lower than the best possible loss
         # save the model
-        print('>>Saving the model: Test loss at {:.4f}'.format(validation_loss_i))
+        ts = datetime.datetime.now().strftime("%d_%b_%Y@%H:%M:%S")
+        print(ts + ' >>Saving the model: Test loss at {:.4f}'.format(validation_loss_i))
         torch.save(model_CNN.state_dict(), model_path)
         best_loss = validation_loss_i
     if epoch == num_epochs:

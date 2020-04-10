@@ -21,7 +21,7 @@ class LicenseLandmarksDataset(Dataset):
             transform (callable, optional): Optional transform to be applied
                 on a sample.
         """
-        self.landmarks_frame = pd.read_csv(csv_file)
+        self.landmarks_frame = pd.read_csv(csv_file, delimiter = '\t')
         self.root_dir = root_dir
         self.transform = transform
 
@@ -50,15 +50,13 @@ class LicenseLandmarksDataset(Dataset):
     def __getitem__(self, idx):
         if torch.is_tensor(idx):
             idx = idx.tolist()
-        img_name = self.root_dir+self.landmarks_frame.iloc[idx, 2]
+        img_name = self.root_dir+self.landmarks_frame.iloc[idx, 0].split('/')[-1] + '.png'
         image = io.imread(img_name)
-        landmarks = self.landmarks_frame.iloc[idx, 10]
+        landmarks = self.landmarks_frame.iloc[idx, 1]
         landmarks= landmarks.strip("][").replace("'",'').replace('"','').split(', ')
         landmarks = np.array(landmarks)
         landmarks = landmarks.astype('float')
         landmarks = self.four_corner(landmarks)
-        # we change the size of the image
-        landmarks = landmarks/3
         sample = {'image': image, 'landmarks': landmarks}
 
         if self.transform:

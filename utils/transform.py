@@ -175,8 +175,8 @@ class resize(object):
 
     def __call__(self, sample):
         image, landmarks = sample['image'], sample['landmarks']
-        image_width = 640
-        image_height = 360
+        image_width = 450
+        image_height = 450
         original_width = image.width
         original_height = image.height
         res = transforms.Resize((image_height,image_width))

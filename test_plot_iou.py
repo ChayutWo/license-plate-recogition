@@ -38,7 +38,7 @@ composed_test = transforms.Compose([PILconvert(), resize(), tensorize()])
 traindata = LicenseLandmarksDataset(train_csv, train_path, composed_test)
 testdata = LicenseLandmarksDataset(test_csv, test_path, composed_test)
 
-test_loader = torch.utils.data.DataLoader(traindata,
+test_loader = torch.utils.data.DataLoader(testdata,
                                           batch_size=test_batch_size, shuffle=False,
                                           num_workers=0, pin_memory=True)
 

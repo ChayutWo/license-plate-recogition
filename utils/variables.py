@@ -14,16 +14,16 @@ test_batch_size = 256
 optimizer_name = 'Adam'
 lr = 1e-2
 scheduler_name = 'MultiStepLR'
-milestones = [30]
-num_epochs = 100
+milestones = [15, 70]
+num_epochs = 80
 
 in_channels = 3
 out_channels = 4
-model_name = 'resnet'
+model_name = 'simple'
 
-train_csv = 'directory_training.csv'
-train_path = 'dataset/resized/UFPR-ALPR dataset/training'
-validate_csv = 'directory_validation.csv'
-validate_path = 'dataset/resized/UFPR-ALPR dataset/validation'
-test_csv = 'directory_testing.csv'
-test_path = 'dataset/resized/UFPR-ALPR dataset/testing'
+train_csv = 'dataset/cropped/training.csv'
+train_path = 'dataset/cropped/training/'
+validate_csv = 'dataset/cropped/validation.csv'
+validate_path = 'dataset/cropped/validation/'
+test_csv = 'dataset/cropped/testing.csv'
+test_path = 'dataset/cropped/testing/'
