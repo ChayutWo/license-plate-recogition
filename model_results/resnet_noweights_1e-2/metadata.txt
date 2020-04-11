@@ -1,0 +1,8 @@
+model: resnet
+optimizer_name = 'Adam'
+lr = 1e-2
+milestones = [15, 70]
+num_epochs = 80
+weights no
+
+IOU 0.4131048652581294
