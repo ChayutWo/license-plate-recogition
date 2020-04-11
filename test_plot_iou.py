@@ -13,7 +13,7 @@ import torch.utils.data as data
 import os
 import os.path
 from torchsummary import summary
-
+import csv
 from models.generate import *
 
 from utils.dataloader import *
@@ -44,7 +44,10 @@ test_loader = torch.utils.data.DataLoader(testdata,
 
 output = iou_from_model(test_loader, model, device)
 print(np.mean(output))
-#plt.hist(output, bins = 30)
-#plt.show()
+plt.hist(output, bins = 30)
+plt.show()
+with open('iou.csv', 'w', newline='') as myfile:
+    wr = csv.writer(myfile)
+    wr.writerow(output)
 
 plot_iou(test_loader, model, device)

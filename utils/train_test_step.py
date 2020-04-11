@@ -21,7 +21,7 @@ def train(model, device, train_loader, criterion, optimizer, epoch):
         lossy = criterion(output[1], target[1])
         lossw = criterion(output[2], target[2])
         lossh = criterion(output[3], target[3])
-        loss = lossx + lossy + lossw + lossh
+        loss = lossx + lossy + 0.75*lossw + 0.75*lossh
         #loss = lossx + lossy
         loss.backward()
         # Update parameters
@@ -47,7 +47,7 @@ def test(model, device, test_loader, criterion, epoch):
             lossy = criterion(output[1], target[1])
             lossw = criterion(output[2], target[2])
             lossh = criterion(output[3], target[3])
-            loss = lossx + lossy + lossw + lossh
+            loss = lossx + lossy + 0.75*lossw + 0.75*lossh
             #loss = lossx + lossy
             test_loss += loss.item()
 

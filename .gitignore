@@ -35,5 +35,6 @@ Thumbs.db
 # Ignore data input files #
 ###########################
 dataset/*
+model_results/*
 *.m
 *.ipynb
