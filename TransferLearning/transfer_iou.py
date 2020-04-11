@@ -72,7 +72,7 @@ def plot_iou(data_loader: torch.utils.data.DataLoader,
              model,
              device,
              image_index=None,
-             random_sample=5,
+             random_sample=10,
              save_fig=False):
     """ Plot IOU using the input model and data_loader
     Args:
@@ -99,7 +99,7 @@ def plot_iou(data_loader: torch.utils.data.DataLoader,
         num_sub_plot = random_sample
         image_indices = np.random.choice(len(data_loader.dataset), size=random_sample, replace=False)
 
-    fig, axs = plt.subplots(num_sub_plot, figsize=(15, 10 * num_sub_plot))
+    fig, axs = plt.subplots(nrows =2, ncols =(num_sub_plot//2), figsize=(30, 20 * num_sub_plot))
 
     with torch.no_grad():
         for i in range(num_sub_plot):
@@ -129,8 +129,10 @@ def plot_iou(data_loader: torch.utils.data.DataLoader,
                                                 2)
             if image_index:
                 axs.imshow(image_with_box_pred)
+            elif i <= num_sub_plot // 2 - 1:
+                axs[0, i].imshow(image_with_box_pred)
             else:
-                axs[i].imshow(image_with_box_pred)
+                axs[1, i - num_sub_plot // 2].imshow(image_with_box_pred)
         if save_fig:
             plt.savefig('IOU_Plots.png')
         plt.show()

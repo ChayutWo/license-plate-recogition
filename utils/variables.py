@@ -19,7 +19,7 @@ num_epochs = 80
 
 in_channels = 3
 out_channels = 4
-model_name = 'simple'
+model_name = 'resnet'
 
 train_csv = 'dataset/cropped/training.csv'
 train_path = 'dataset/cropped/training/'
