@@ -33,26 +33,26 @@ data_loader_test = torch.utils.data.DataLoader(
 
 
 params = [p for p in model.parameters() if p.requires_grad]
-optimizer = torch.optim.SGD(params, lr=1e-2,
+optimizer = torch.optim.SGD(params, lr=5e-3,
                             momentum=0.9, weight_decay=0.0005)
 # and a learning rate scheduler
 lr_scheduler = torch.optim.lr_scheduler.StepLR(optimizer,
                                                step_size=3,
                                                gamma=0.1)
 
-RUN_MODEL = False
+RUN_MODEL = True
 
 if RUN_MODEL:
-    num_epochs = 5
+    num_epochs = 15
 
     for epoch in range(num_epochs):
         # train for one epoch, printing every 10 iterations
         train_one_epoch(model, optimizer, data_loader, device, epoch, print_freq=10)
         # update the learning rate
         lr_scheduler.step()
-    torch.save(model, 'transferLearning5Epoch.pth')
+    torch.save(model, 'transferLearning15Epoch.pth')
 else:
-    model = torch.load('transferLearning5Epoch.pth')
+    model = torch.load('transferLearning15Epoch.pth')
 
 iou_list = transfer_iou.iou_from_model(data_loader_test, model, device)
 print(np.mean(iou_list))
